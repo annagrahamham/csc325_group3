@@ -40,6 +40,8 @@ public class BankSimulation {
         public void withdraw(int amount, String who) {
             // Simulate "processing time" with a dumb busy loop (CPU burn, not sleep)
             fakeWork(); 
+
+            //ADDED SYCHRONIZATION HERE
             synchronized(this){
             // Check balance first
             if (balance >= amount) {
@@ -115,11 +117,15 @@ public class BankSimulation {
     public static void main(String[] args) throws InterruptedException {
         BankAccount shared = new BankAccount(1000); // start $1000
 
+
+        
         ExecutorService ex = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         //ExecutorService that creates a fixed pool of threads based on available processors
-        // We’ll spin up several "people" hitting the same account.
-        List<WithdrawTask> threads = List.of(
 
+
+        // We’ll spin up several "people" hitting the same account.
+
+        List<WithdrawTask> threads = List.of(
         new WithdrawTask(shared, "Alice", 50, 10),
         new WithdrawTask(shared, "Bob", 50, 10),
         new WithdrawTask(shared, "Charlie", 50, 10),
